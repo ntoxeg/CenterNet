@@ -11,7 +11,7 @@ import os
 import torch.utils.data as data
 
 class Widgets(data.Dataset):
-  num_classes = 5
+  num_classes = 15
   default_resolution = [512, 512]
   mean = np.array([0.40789654, 0.44719302, 0.47026115],
                    dtype=np.float32).reshape(1, 1, 3)
@@ -20,11 +20,9 @@ class Widgets(data.Dataset):
 
   def __init__(self, opt, split):
     super().__init__()
-    self.data_dir = os.path.join(opt.data_dir, 'widgets_miniwob')
-    self.img_dir = os.path.join(os.environ["HOME"],
-                               "data",
-                               'Widgets_miniwob')
-    # self.img_dir = "/datasets/Widgets"
+    self.data_dir = os.path.join(opt.data_dir, "widgets")
+    self.img_dir = os.path.join(opt.data_dir, "widgets", "images")
+
     if split == 'test':
       self.annot_path = os.path.join(
           self.data_dir, 'annotations',
@@ -37,10 +35,26 @@ class Widgets(data.Dataset):
       else:
         self.annot_path = os.path.join(
           self.data_dir, 'annotations',
-          'Widgets_miniwob-{}2.json').format(split)
+          'widgets-{}.json').format(split)
     self.max_objs = 8
-    self.class_name = ["button", "slider", "menu", "text_field", "checkbox"]
-    self._valid_ids = [2, 3, 4, 5, 6]
+    self.class_name = [
+      "button",
+      "slider",
+      "menu",
+      "text_field",
+      "checkbox",
+      "browser",
+      "modal",
+      "close_button",
+      "minimize_button",
+      "back_button",
+      "next_button",
+      "text_object",
+      "browser_tab",
+      "browser_bookmark",
+      "browser_address"
+    ]
+    self._valid_ids = list(range(2, 16 + 1))
     self.cat_ids = {v: i for i, v in enumerate(self._valid_ids)}
     self.voc_color = [(v // 32 * 64 + 64, (v // 8) % 4 * 64, v % 8 * 32) \
                       for v in range(1, self.num_classes + 1)]
